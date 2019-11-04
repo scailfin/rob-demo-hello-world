@@ -30,7 +30,7 @@ workflow:
        - results/analytics.json
 parameters:
     - id: names
-      name: 'Names Input File'
+      name: 'Names File'
       datatype: file
       as: data/names.txt
     - id: sleeptime
