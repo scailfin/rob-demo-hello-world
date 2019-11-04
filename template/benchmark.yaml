@@ -1,0 +1,65 @@
+workflow:
+    version: 0.3.0
+    inputs:
+      files:
+        - code/analyze.py
+        - code/helloworld.py
+        - $[[names]]
+      parameters:
+        inputfile: $[[names]]
+        outputfile: results/greetings.txt
+        sleeptime: $[[sleeptime]]
+        greeting: $[[greeting]]
+    workflow:
+      type: serial
+      specification:
+        steps:
+          - environment: 'python:3.7'
+            commands:
+              - python code/helloworld.py
+                  --inputfile "${inputfile}"
+                  --outputfile "${outputfile}"
+                  --sleeptime ${sleeptime}
+                  --greeting "${greeting}"
+              - python code/analyze.py
+                  --inputfile "${outputfile}"
+                  --outputfile results/analytics.json
+    outputs:
+      files:
+       - results/greetings.txt
+       - results/analytics.json
+parameters:
+    - id: names
+      name: 'Names Input File'
+      datatype: file
+      as: data/names.txt
+    - id: sleeptime
+      name: 'Sleep for (sec.)'
+      datatype: decimal
+      defaultValue: 10
+    - id: greeting
+      name: 'Greeting'
+      datatype: string
+      defaultValue: 'Hello'
+results:
+    file: 'results/analytics.json'
+    schema:
+        - id: ngrams
+          name: 'Number of 3-grams'
+          type: int
+          required: False
+        - id: linecount
+          name: 'Number of lines'
+          type: int
+          required: False
+        - id: score
+          name: 'Score'
+          type: decimal
+          required: True
+    orderBy:
+        - id: score
+          sortDesc: true
+        - id: ngrams
+          sortDesc: true
+        - id: linecount
+          sortDesc: false
