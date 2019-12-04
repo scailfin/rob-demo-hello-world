@@ -23,7 +23,7 @@ import sys
 def main(inputfile, outputfile):
     """Read input file lines. For each non-empty line the distinct 3-grams are
     added to the overall 3-gram index. The output is a Json object that contains
-    the total number o3-grams, number of lines and the score.
+    the total number of 3-grams, number of lines and the score.
 
     Parameters
     ----------
