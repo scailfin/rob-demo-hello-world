@@ -270,7 +270,7 @@ When starting a run using ``rob runs start`` the system will prompt for values f
     ---------------
     a786b1ad0ba54956b9de15f437958958	names-alice.txt (2019-12-03 18:44:23)
 
-    > a786b1ad0ba54956b9de15f437958958
+    Names File: a786b1ad0ba54956b9de15f437958958
     Sleep for (sec.) (decimal) [default 10]: 1
     run f48cfe379c284341a9f10c6c6cdac3dc in state RUNNING
 
