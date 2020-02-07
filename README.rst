@@ -64,11 +64,11 @@ The output should contain at least the created benchmark. Note that the benchmar
     2a0f6059 | Hello World | Simple Hello World Demo
 
 
-=================
+
 Run the Benchmark
 =================
 
-Below we list a sequence of ``rob`` commands to inspect and run the created benchmark. There also is a `screen recording of a more comprehensive example <https://asciinema.org/a/285152`_ available online.
+Below we list a sequence of ``rob`` commands to inspect and run the created benchmark. There also is a `screen recording of a more comprehensive example <https://asciinema.org/a/285152>`_ available online.
 
 
 View Benchmark Information
