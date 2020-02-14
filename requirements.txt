@@ -1,0 +1,3 @@
+flowserv-core>=0.1.0
+numpy
+matplotlib
