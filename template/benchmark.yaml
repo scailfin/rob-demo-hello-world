@@ -41,6 +41,35 @@ parameters:
       name: 'Greeting'
       datatype: string
       defaultValue: 'Hello'
+postproc:
+    workflow:
+        version: 0.3.0
+        inputs:
+          files:
+            - code/postproc.py
+            - $[[runs]]
+          parameters:
+            rundir: $[[runs]]
+        workflow:
+          type: serial
+          specification:
+            steps:
+              - environment: 'python:3.7'
+                commands:
+                  - python code/postproc.py
+                      --runs "${rundir}"
+                      --outputfile results/ngrams.png
+        outputs:
+            files:
+                - 'results/ngrams.png'
+    inputs:
+        files:
+            - 'results/greetings.txt'
+        runs: 'runs/'
+    outputs:
+        - id: 'results/ngrams.png'
+          title: 'Top-5 3-grams'
+          caption: 'Histogram of the five most frequent 3-grams for each submission.'
 results:
     file: 'results/analytics.json'
     schema:
