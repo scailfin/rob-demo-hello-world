@@ -25,8 +25,8 @@ Use the ``robadm`` command line client from the Web API to create a new benchmar
 
 .. code-block:: bash
 
-    export ROB_DBMS=SQLITE3
-    export SQLITE_ROB_CONNECT=./.rob/db.sqlite
+    export FLOWSERV_DBMS=SQLITE3
+    export SQLITE_FLOWSERV_CONNECT=./.rob/db.sqlite
 
 
 If the Web API is running on your local machine with the default settings there is no need to configure additional environment variables. If the Web API is running on a different machine or port, for example, set the environment variables **ROB_API_HOST**, **ROB_API_PORT**, and **ROB_API_PATH** accordingly (see `the documentation <https://github.com/scailfin/rob-core/blob/master/docs/configuration.rst>`_ for details).
@@ -36,22 +36,22 @@ If the Web API is running on your local machine with the default settings there 
 Hello-World Benchmark
 ---------------------
 
-The following commands will download the demo and register it as a new benchmark:
+To start, you need to register a new workflow with the flowServ backend. This can be done using the ``flowserv`` command line tool. The following commands will download the demo and register it as a new workflow:
 
 .. code-block:: bash
 
     git clone https://github.com/scailfin/rob-demo-hello-world.git
-    robadm benchmarks create -n "Hello World" \
+    flowserv workflows create -n "Hello World" \
         -d "Simple Hello World Demo" \
-        -i rob-demo-hello-world/instructions.txt \
-        -s rob-demo-hello-world/template/
+        -i ../instructions.txt \
+        -s ./rob-demo-hello-world/template/
 
 
-To confirm that everything worked as expected use the ``rob`` command line tool to list available benchmarks:
+To confirm that everything worked as expected list the available workflows:
 
 .. code-block:: bash
 
-    rob benchmarks list
+    flowserv workflows list
 
 
 The output should contain at least the created benchmark. Note that the benchmark identifier will likely be different every time you register a benchmark.
@@ -59,16 +59,20 @@ The output should contain at least the created benchmark. Note that the benchmar
 
 .. code-block:: console
 
-    ID       | Name        | Description
-    ---------|-------------|------------------------
-    2a0f6059 | Hello World | Simple Hello World Demo
+    Benchmark 1
+    -----------
+
+    ID          : 13f7f8c4
+    Name        : Hello World
+    Description : Simple Hello World Demo
+    Instructions: This example benchmark is adopted from the REANA Hello World Demo. The workflow has a single step that takes a text file with person names as input, together with a greeting phrase, and a sleep time. For each name in the input file a greeting will be written to an output file that is the concatenation of the greeting phrase and the name. For the purpose of this demo the result file is then analyzed to compute a score for every workflow run. Analysis computes the number of distinct 3-grams in the output file. The overall score is the number of 3-grams divided by the number of lines in the output file. The goal is to achieve a high score.
 
 
 
 Run the Benchmark
 =================
 
-Below we list a sequence of ``rob`` commands to inspect and run the created benchmark. There also is a `screen recording of a more comprehensive example <https://asciinema.org/a/285152>`_ available online.
+You can use the ``rob`` command line tool to run a registered benchmark and inspect the run results. Below we list a sequence of ``rob`` commands to inspect and run the created benchmark. There also is a `screen recording of a more comprehensive example <https://asciinema.org/a/285152>`_ available online.
 
 
 View Benchmark Information
@@ -285,39 +289,39 @@ Depending on the state of the submitted run the output will look similar to one 
 
 .. code-block:: console
 
-    ID                               | Started at          | Finished at | State
-    ---------------------------------|---------------------|-------------|--------
-    f48cfe379c284341a9f10c6c6cdac3dc | 2019-12-03 18:45:05 |             | RUNNING
+    ID                               | Submitted at               | State
+    ---------------------------------|----------------------------|--------
+    a29625a9006b42e6a499fe3bbfdcd08a | 2020-06-05T17:11:22.140346 | RUNNING
 
     or
 
-    ID                               | Started at          | Finished at         | State
-    ---------------------------------|---------------------|---------------------|--------
-    f48cfe379c284341a9f10c6c6cdac3dc | 2019-12-03 18:45:05 | 2019-12-03 18:46:17 | SUCCESS
+    ID                               | Submitted at               | State
+    ---------------------------------|----------------------------|--------
+    a29625a9006b42e6a499fe3bbfdcd08a | 2020-06-05T17:11:22.140346 | SUCCESS
 
 
 To get information about a successful run use:
 
 .. code-block:: bash
 
-    rob runs show -r f48cfe379c284341a9f10c6c6cdac3dc
+    rob runs show -r a29625a9006b42e6a499fe3bbfdcd08a
 
 
 The output will show the run timestamps as well as the produced output files.
 
 .. code-block:: console
 
-    ID: f48cfe379c284341a9f10c6c6cdac3dc
-    Started at: 2019-12-03 18:45:05
-    Finished at: 2019-12-03 18:46:17
+    ID: a29625a9006b42e6a499fe3bbfdcd08a
+    Started at: 2020-06-05 13:11:22
+    Finished at: 2020-06-05 13:17:17
     State: SUCCESS
     Arguments:
       Greeting = Hi
-      Names File = names-alice.txt (a786b1ad0ba54956b9de15f437958958)
-      Sleep for (sec.) = 1.0
+      Names File = names-alice.txt (843974550dc14c0bb9c142264ee54d57)
+      Sleep for (sec.) = 5.0
     Resources:
-      results/greetings.txt (d8db9bbb96514e579976d7befdbd0031)
-      results/analytics.json (f669c83008324e2eb5156c4ffdd8c47c)
+      results/analytics.json (12705f33e4fe4740a3607d849642f1d1)
+      results/greetings.txt (9b3bd248f43e4e9ea95f7c8f4a7eac88)
 
 
 You can download output files that were generated by a workflow run. The following example downloads the ``results/greetings.txt`` file and stores it as ``alice.txt`` in the current working directory.
@@ -325,7 +329,7 @@ You can download output files that were generated by a workflow run. The followi
 
 .. code-block:: bash
 
-    rob runs download -r f48cfe379c284341a9f10c6c6cdac3dc -f d8db9bbb96514e579976d7befdbd0031 -o alice.txt
+    rob runs download -r a29625a9006b42e6a499fe3bbfdcd08a -f 9b3bd248f43e4e9ea95f7c8f4a7eac88 -o alice.txt
 
 
 The downloaded file should look like this:

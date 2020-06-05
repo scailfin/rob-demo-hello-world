@@ -1,4 +1,0 @@
-[
-    {"id":"ABCD", "name":"Team Alice", "resources": ["results/greetings.txt"]},
-    {"id":"EFGH", "name":"Team Bob", "resources": ["results/greetings.txt"]}
-]
