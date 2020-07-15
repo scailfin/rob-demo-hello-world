@@ -9,7 +9,6 @@ import errno
 import numpy as np
 import matplotlib.pyplot as plt
 import os
-import json
 import sys
 import time
 
@@ -32,11 +31,11 @@ def main(rundir, outputfile):
                 line = line.strip()
                 if len(line) >= 3:
                     for i in range(len(line) - 2):
-                        ng = line[i:i+3]
+                        ng = line[i:i + 3]
                         ngrams[ng] = ngrams.get(ng, 0) + 1
         candidates = [(n, ngrams[n]) for n in ngrams]
-        candidates.sort(key=lambda p:p[1], reverse=True)
-        if len(candidates)> 5:
+        candidates.sort(key=lambda p: p[1], reverse=True)
+        if len(candidates) > 5:
             candidates = candidates[:5]
         results.append((run.name, candidates))
         # Add n-grams to global set of result keys
