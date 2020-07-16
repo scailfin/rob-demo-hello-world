@@ -1,3 +1,7 @@
+"""Post-processing code for hello workd Demo. This code is included with
+flowServ for testing purposes only.
+"""
+
 from collections import Counter
 
 import argparse
@@ -12,8 +16,8 @@ from flowserv.service.postproc.client import Runs
 
 def main(rundir, outputfile=None):
     """Create a plot showing the frequency of the 25 most frequent n-grams in
-    the greeting files of all runs. Counts only those n-grams that do not contain
-    a whitespace character.
+    the greeting files of all runs. Counts only those n-grams that do not
+    contain a whitespace character.
     """
     # Count frequency of n-grams for all runs.
     ngrams = Counter()
@@ -24,11 +28,11 @@ def main(rundir, outputfile=None):
                 if len(line) >= 3:
                     for i in range(len(line) - 2):
                         ng = line[i:i + 3].upper()
-                        if not ' ' in ng:
+                        if ' ' not in ng:
                             ngrams[ng] += 1
         # Delay execution to allow for testing running post-processing
         # workflows
-        time.sleep(0)
+        time.sleep(10)
     # Create plot
     x = list()
     y = list()
@@ -58,3 +62,15 @@ def main(rundir, outputfile=None):
         plt.savefig(outputfile)
     else:
         plt.show()
+
+
+if __name__ == '__main__':
+    args = sys.argv[1:]
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-r", "--runs", required=True)
+    parser.add_argument("-o", "--outputfile", required=True)
+
+    parsed_args = parser.parse_args(args)
+
+    main(rundir=parsed_args.runs, outputfile=parsed_args.outputfile)
