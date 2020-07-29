@@ -11,7 +11,7 @@ import time
 from flowserv.service.postproc.client import Runs
 
 
-def main(rundir, k=25, outputfile=None):
+def main(rundir, k=25, timeout=10, outputfile=None):
     """Create a csv file containing the frequency of the k most frequent
     n-grams in the greeting files of all runs. Counts only those n-grams that
     do not contain a whitespace character.
@@ -29,7 +29,7 @@ def main(rundir, k=25, outputfile=None):
                             ngrams[ng] += 1
         # Delay execution to allow for testing running post-processing
         # workflows
-        time.sleep(10)
+        time.sleep(timeout)
     # Output csv file with two columns: ngram,count
     with open(outputfile, 'w') as f:
         for ngram, count in ngrams.most_common(k):
@@ -42,6 +42,13 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("-r", "--runs", required=True)
     parser.add_argument("-o", "--outputfile", required=True)
+    parser.add_argument("-k", "--topk", type=int, required=False)
+    parser.add_argument("-t", "--timeout", type=float, required=False)
     parsed_args = parser.parse_args(args)
     # Run the main routine.
-    main(rundir=parsed_args.runs, outputfile=parsed_args.outputfile)
+    main(
+        rundir=parsed_args.runs,
+        k=parsed_args.topk,
+        timeout=parsed_args.timeout,
+        outputfile=parsed_args.outputfile
+    )
