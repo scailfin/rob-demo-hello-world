@@ -58,18 +58,18 @@ postproc:
                 commands:
                   - python code/postproc.py
                       --runs "${rundir}"
-                      --outputfile results/ngrams.png
+                      --outputfile results/ngrams.csv
         outputs:
             files:
-                - 'results/ngrams.png'
+                - 'results/ngrams.csv'
     inputs:
         files:
             - 'results/greetings.txt'
         runs: 'runs/'
     outputs:
-        - id: 'results/ngrams.png'
-          title: 'Top-5 3-grams'
-          caption: 'Histogram of the five most frequent 3-grams for each submission.'
+        - id: 'results/ngrams.csv'
+          title: 'Top-25 3-grams'
+          caption: 'Histogram of the 25 most frequent 3-grams over all submission.'
 results:
     file: 'results/analytics.json'
     schema:
