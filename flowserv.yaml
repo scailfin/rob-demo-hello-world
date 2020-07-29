@@ -1,5 +1,5 @@
 name: 'Hello World Demo'
-description: 'Simple Hello World Demo for ROB'
+description: 'Hello World Demo for ROB'
 instructions: 'instructions.txt'
 files:
     - source: 'template/code'
