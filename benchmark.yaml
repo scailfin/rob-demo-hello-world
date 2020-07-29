@@ -14,7 +14,7 @@ workflow:
       type: serial
       specification:
         steps:
-          - environment: 'python:3.7'
+          - environment: 'heikomueller/flowserv:0.2.0'
             commands:
               - python code/helloworld.py
                   --inputfile "${inputfile}"
@@ -54,7 +54,7 @@ postproc:
           type: serial
           specification:
             steps:
-              - environment: 'python:3.7'
+              - environment: 'heikomueller/flowserv:0.2.0'
                 commands:
                   - python code/postproc.py
                       --runs "${rundir}"
