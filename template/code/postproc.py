@@ -42,8 +42,13 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("-r", "--runs", required=True)
     parser.add_argument("-o", "--outputfile", required=True)
-    parser.add_argument("-k", "--topk", type=int, required=False)
-    parser.add_argument("-t", "--timeout", type=float, required=False)
+    parser.add_argument("-k", "--topk", type=int, required=False, default=25)
+    parser.add_argument(
+        "-t", "--timeout",
+        type=float,
+        required=False,
+        default=1
+    )
     parsed_args = parser.parse_args(args)
     # Run the main routine.
     main(
