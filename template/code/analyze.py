@@ -22,8 +22,8 @@ import sys
 
 def main(inputfile, outputfile):
     """Read input file lines. For each non-empty line the distinct 3-grams are
-    added to the overall 3-gram index. The output is a Json object that contains
-    the total number of 3-grams, number of lines and the score.
+    added to the overall 3-gram index. The output is a Json object that
+    contains the total number of 3-grams, number of lines and the score.
 
     Parameters
     ----------
@@ -40,11 +40,11 @@ def main(inputfile, outputfile):
             line = line.strip()
             if len(line) >= 3:
                 for i in range(len(line) - 2):
-                    ngrams.add(line[i:i+3])
+                    ngrams.add(line[i:i + 3])
                 line_count += 1
     # Create results object
     if len(ngrams) > 0 and line_count > 0:
-        score = len(ngrams)/ line_count
+        score = len(ngrams) / line_count
     else:
         score = 0.0
     results = {

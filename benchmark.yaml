@@ -26,20 +26,30 @@ workflow:
                   --outputfile results/analytics.json
     outputs:
       files:
-       - results/greetings.txt
-       - results/analytics.json
+       - 'results/greetings.txt'
+       - 'results/analytics.json'
+outputs:
+    - source: 'results/greetings.txt'
+      title: 'Greetings'
+      caption: 'List of greetings for all persons in the input file'
+      format:
+          type: 'plaintext'
+    - source: 'results/analytics.json'
+      title: 'Score'
+      format:
+          type: 'json'
 parameters:
     - id: names
       name: 'Names File'
-      type: file
+      dtype: file
       target: data/names.txt
     - id: sleeptime
       name: 'Sleep for (sec.)'
-      type: float
+      dtype: float
       defaultValue: 10
     - id: greeting
       name: 'Greeting'
-      type: string
+      dtype: string
       defaultValue: 'Hello'
 postproc:
     workflow:
@@ -67,23 +77,30 @@ postproc:
             - 'results/greetings.txt'
         runs: 'runs/'
     outputs:
-        - id: 'results/ngrams.csv'
+        - source: 'results/ngrams.csv'
           title: 'Top-25 3-grams'
           caption: 'Histogram of the 25 most frequent 3-grams over all submission.'
+          widget: 'table'
+          format:
+              filetype: 'csv'
+              header: false
+              columns:
+                  - '3-gram'
+                  - 'Count'
 results:
     file: 'results/analytics.json'
     schema:
         - id: ngrams
           name: 'Number of 3-grams'
-          type: int
+          dtype: int
           required: False
         - id: linecount
           name: 'Number of lines'
-          type: int
+          dtype: int
           required: False
         - id: score
           name: 'Score'
-          type: float
+          dtype: float
           required: True
     orderBy:
         - id: score
