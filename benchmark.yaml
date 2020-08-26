@@ -80,9 +80,8 @@ postproc:
         - source: 'results/ngrams.csv'
           title: 'Top-25 3-grams'
           caption: 'Histogram of the 25 most frequent 3-grams over all submission.'
-          widget: 'table'
           format:
-              filetype: 'csv'
+              type: 'csv'
               header: false
               columns:
                   - '3-gram'
