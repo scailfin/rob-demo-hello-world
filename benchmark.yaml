@@ -30,8 +30,8 @@ workflow:
        - 'results/analytics.json'
 outputs:
     - source: 'results/greetings.txt'
-      title: 'Greetings'
-      caption: 'List of greetings for all persons in the input file'
+      title: 'Saying Hello to ...'
+      caption: 'Greetings for all persons.'
       format:
           type: 'plaintext'
     - source: 'results/analytics.json'
