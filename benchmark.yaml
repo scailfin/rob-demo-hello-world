@@ -39,16 +39,16 @@ outputs:
       format:
           type: 'json'
 parameters:
-    - id: names
-      name: 'Names File'
+    - name: names
+      label: 'Names File'
       dtype: file
       target: data/names.txt
-    - id: sleeptime
-      name: 'Sleep for (sec.)'
+    - name: sleeptime
+      label: 'Sleep for (sec.)'
       dtype: float
       defaultValue: 10
-    - id: greeting
-      name: 'Greeting'
+    - name: greeting
+      label: 'Greeting'
       dtype: string
       defaultValue: 'Hello'
 postproc:
@@ -89,22 +89,22 @@ postproc:
 results:
     file: 'results/analytics.json'
     schema:
-        - id: ngrams
-          name: 'Number of 3-grams'
+        - name: ngrams
+          label: 'Number of 3-grams'
           dtype: int
           required: False
-        - id: linecount
-          name: 'Number of lines'
+        - name: linecount
+          label: 'Number of lines'
           dtype: int
           required: False
-        - id: score
-          name: 'Score'
+        - name: score
+          label: 'Score'
           dtype: float
           required: True
     orderBy:
-        - id: score
+        - name: score
           sortDesc: true
-        - id: ngrams
+        - name: ngrams
           sortDesc: true
-        - id: linecount
+        - name: linecount
           sortDesc: false
