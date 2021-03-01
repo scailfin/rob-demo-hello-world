@@ -14,14 +14,14 @@ workflow:
       type: serial
       specification:
         steps:
-          - environment: 'heikomueller/flowserv:0.2.0'
+          - environment: 'python:3.9'
             commands:
-              - python code/helloworld.py
+              - ${python} code/helloworld.py
                   --inputfile "${inputfile}"
                   --outputfile "${outputfile}"
                   --sleeptime ${sleeptime}
                   --greeting "${greeting}"
-              - python code/analyze.py
+              - ${python} code/analyze.py
                   --inputfile "${outputfile}"
                   --outputfile results/analytics.json
     outputs:
@@ -64,9 +64,9 @@ postproc:
           type: serial
           specification:
             steps:
-              - environment: 'heikomueller/flowserv:0.2.0'
+              - environment: 'heikomueller/flowserv:0.8.0'
                 commands:
-                  - python code/postproc.py
+                  - ${python} code/postproc.py
                       --runs "${rundir}"
                       --outputfile results/ngrams.csv
         outputs:
