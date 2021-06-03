@@ -1,110 +1,137 @@
 workflow:
-    version: 0.3.0
-    inputs:
-      files:
-        - code/analyze.py
-        - code/helloworld.py
-        - $[[names]]
-      parameters:
-        inputfile: $[[names]]
-        outputfile: results/greetings.txt
+    files:
+        inputs:
+        - "code/analyze.py"
+        - "code/helloworld.py"
+        - "data/names.txt"
+        outputs:
+        - "results/greetings.txt"
+        - "results/analytics.json"
+    parameters:
+        inputfile: "data/names.txt"
+        outputfile: "results/greetings.txt"
         sleeptime: $[[sleeptime]]
         greeting: $[[greeting]]
-    workflow:
-      type: serial
-      specification:
-        steps:
-          - environment: 'python:3.9'
-            commands:
-              - ${python} code/helloworld.py
-                  --inputfile "${inputfile}"
-                  --outputfile "${outputfile}"
-                  --sleeptime ${sleeptime}
-                  --greeting "${greeting}"
-              - ${python} code/analyze.py
-                  --inputfile "${outputfile}"
-                  --outputfile results/analytics.json
-    outputs:
+    steps:
+    - name: "say_hello"
       files:
-       - 'results/greetings.txt'
-       - 'results/analytics.json'
+        inputs:
+        - "code/helloworld.py"
+        - "data/names.txt"
+        outputs:
+        - "results/greetings.txt"
+      action:
+          environment: "python:3.7"
+          commands:
+          - ${python} code/helloworld.py
+              --inputfile "${inputfile}"
+              --outputfile "${outputfile}"
+              --sleeptime ${sleeptime}
+              --greeting "${greeting}"
+    - name: "analyze"
+      files:
+        inputs:
+        - "code/analyze.py"
+        - "results/greetings.txt"
+        outputs:
+        - "results/analytics.json"
+      action:
+          environment: "python:3.7"
+          commands:
+          - ${python} code/analyze.py
+              --inputfile "${outputfile}"
+              --outputfile results/analytics.json
 outputs:
-    - source: 'results/greetings.txt'
-      title: 'Saying Hello to ...'
-      caption: 'Greetings for all persons.'
+    - source: "results/greetings.txt"
+      title: "Saying Hello to ..."
+      caption: "Greetings for all persons."
       format:
-          type: 'plaintext'
-    - source: 'results/analytics.json'
-      title: 'Score'
+          type: "plaintext"
+    - source: "results/analytics.json"
+      title: "Score"
       format:
-          type: 'json'
+          type: "json"
 parameters:
-    - name: names
-      label: 'Names File'
-      dtype: file
-      target: data/names.txt
-    - name: sleeptime
-      label: 'Sleep for (sec.)'
-      dtype: float
+    - name: "names"
+      label: "Names File"
+      dtype: "file"
+      target: "data/names.txt"
+    - name: "sleeptime"
+      label: "Sleep for (sec.)"
+      dtype: "float"
       defaultValue: 10
-    - name: greeting
-      label: 'Greeting'
-      dtype: string
-      defaultValue: 'Hello'
+    - name: "greeting"
+      label: "Greeting"
+      dtype: "string"
+      defaultValue: "Hello"
 postproc:
     workflow:
-        version: 0.3.0
-        inputs:
-          files:
-            - code/postproc.py
-            - $[[runs]]
-          parameters:
-            rundir: $[[runs]]
-        workflow:
-          type: serial
-          specification:
-            steps:
-              - environment: 'heikomueller/flowserv:0.8.0'
-                commands:
+        files:
+            inputs:
+            - "code/postproc.py"
+            - "code/ngrams.py"
+            - "runs/"
+            outputs:
+            - "results/compare.json"
+            - "results/ngrams.csv"
+        parameters:
+            rundir: "runs/"
+        steps:
+            - name: "postproc"
+              files:
+                inputs:
+                - "code/postproc.py"
+                - "code/ngrams.py"
+                - "runs/"
+                outputs:
+                - "results/compare.json"
+                - "results/ngrams.csv"
+              action:
+                  environment: "python:3.7"
+                  commands:
+                  - ${python} code/ngrams.py
+                    --runs "${rundir}"
+                    --outputfile results/ngrams.csv
                   - ${python} code/postproc.py
-                      --runs "${rundir}"
-                      --outputfile results/ngrams.csv
-        outputs:
-            files:
-                - 'results/ngrams.csv'
+                    --runs "${rundir}"
+                    --outputfile results/compare.json
     inputs:
         files:
-            - 'results/greetings.txt'
-        runs: 'runs/'
+            - "results/greetings.txt"
+            - "results/analytics.json"
+        runs: "runs/"
     outputs:
-        - source: 'results/ngrams.csv'
-          title: 'Top-25 3-grams'
-          caption: 'Histogram of the 25 most frequent 3-grams over all submission.'
+        - source: "results/ngrams.csv"
+          title: "Top-25 3-grams"
+          caption: "Histogram of the 25 most frequent 3-grams over all submission."
           format:
-              type: 'csv'
+              type: "csv"
               header: false
               columns:
-                  - '3-gram'
-                  - 'Count'
+                  - "3-gram"
+                  - "Count"
+        - source: "results/compare.json"
+          title: "Comparison Results"
+          caption: "Results summarizing the scores for different runs."
 results:
-    file: 'results/analytics.json'
+    file: "results/analytics.json"
     schema:
-        - name: ngrams
-          label: 'Number of 3-grams'
-          dtype: int
+        - name: "ngrams"
+          label: "Number of 3-grams"
+          dtype: "int"
           required: False
-        - name: linecount
-          label: 'Number of lines'
-          dtype: int
+        - name: "linecount"
+          label: "Number of lines"
+          dtype: "int"
           required: False
-        - name: score
-          label: 'Score'
-          dtype: float
+        - name: "score"
+          label: "Score"
+          dtype: "float"
           required: True
     orderBy:
-        - name: score
+        - name: "score"
           sortDesc: true
-        - name: ngrams
+        - name: "ngrams"
           sortDesc: true
-        - name: linecount
+        - name: "linecount"
           sortDesc: false
