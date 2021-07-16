@@ -2,58 +2,50 @@
 flowServ for testing purposes only.
 """
 
-from collections import Counter
-
 import argparse
+import errno
+import os
+import json
 import sys
 import time
 
 from flowserv.service.postproc.client import Runs
 
+import flowserv.util as util
 
-def main(rundir, k=25, timeout=10, outputfile=None):
-    """Create a csv file containing the frequency of the k most frequent
-    n-grams in the greeting files of all runs. Counts only those n-grams that
-    do not contain a whitespace character.
+
+def main(rundir, outputfile):
     """
-    # Count frequency of n-grams for all runs.
-    ngrams = Counter()
+    Create summary of analytics results for all runs.
+    """
+    # Read avg_count for all runs in the ranking
+    results = list()
     for run in Runs(rundir):
-        with open(run.get_file('results/greetings.txt'), 'r') as f:
-            for line in f:
-                line = line.strip()
-                if len(line) >= 3:
-                    for i in range(len(line) - 2):
-                        ng = line[i:i + 3].upper()
-                        if ' ' not in ng:
-                            ngrams[ng] += 1
+        filename = run.get_file(name='results/analytics.json')
+        doc = util.read_object(filename=filename)
+        results.append(doc)
         # Delay execution to allow for testing running post-processing
         # workflows
-        time.sleep(timeout)
-    # Output csv file with two columns: ngram,count
-    with open(outputfile, 'w') as f:
-        for ngram, count in ngrams.most_common(k):
-            f.write('{},{}\n'.format(ngram, count))
+        time.sleep(1)
+    # Write analytics results. Ensure that output directory exists:
+    # influenced by http://stackoverflow.com/a/12517490
+    if not os.path.exists(os.path.dirname(outputfile)):
+        try:
+            os.makedirs(os.path.dirname(outputfile))
+        except OSError as exc:  # guard against race condition
+            if exc.errno != errno.EEXIST:
+                raise
+    with open(outputfile, "at") as f:
+        json.dump(results, f)
 
 
 if __name__ == '__main__':
     args = sys.argv[1:]
-    # Parse command line arguments.
+
     parser = argparse.ArgumentParser()
     parser.add_argument("-r", "--runs", required=True)
     parser.add_argument("-o", "--outputfile", required=True)
-    parser.add_argument("-k", "--topk", type=int, required=False, default=25)
-    parser.add_argument(
-        "-t", "--timeout",
-        type=float,
-        required=False,
-        default=1
-    )
+
     parsed_args = parser.parse_args(args)
-    # Run the main routine.
-    main(
-        rundir=parsed_args.runs,
-        k=parsed_args.topk,
-        timeout=parsed_args.timeout,
-        outputfile=parsed_args.outputfile
-    )
+
+    main(rundir=parsed_args.runs, outputfile=parsed_args.outputfile)
