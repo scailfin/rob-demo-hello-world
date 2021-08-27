@@ -22,10 +22,10 @@ workflow:
               - ${python} code/analyze.py
                   --inputfile results/greetings.txt
                   --outputfile results/analytics.json
-        outputs:
-          files:
-           - results/greetings.txt
-           - results/analytics.json
+    outputs:
+      files:
+        - results/greetings.txt
+        - results/analytics.json
 outputs:
     - source: "results/greetings.txt"
       title: "Saying Hello to ..."
